@@ -14,5 +14,5 @@ EMAIL_FROM = os.getenv("EMAIL_FROM", "onboarding@resend.dev")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api/v1")
-QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "./uploads")
+QDRANT_URL = os.getenv("QDRANT_URL", "http://qdrant:6333")
+UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/uploads")
