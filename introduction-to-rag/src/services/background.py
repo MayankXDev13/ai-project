@@ -19,7 +19,11 @@ def process_pdf_background(document_id: str) -> None:
             collection_name = f"doc_{document_id}"
 
             langchain_docs = rag.process_pdf(doc.storage_path)
-            rag.embed_and_store(langchain_docs, collection_name)
+
+            if not langchain_docs:
+                raise ValueError("No text could be extracted from the PDF")
+
+            chunk_count = rag.embed_and_store(langchain_docs, collection_name)
 
             doc.status = ProcessingStatus.COMPLETED
             doc.qdrant_collection_id = collection_name

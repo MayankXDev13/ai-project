@@ -26,7 +26,7 @@ async def upload_document(
         user_id=user.id,
         filename=file.filename,
         storage_path=storage_path,
-        mime_type=file.content_type,
+        mime_type=file.content_type or "application/pdf",
     )
 
     background_tasks.add_task(process_pdf_background, doc.id)

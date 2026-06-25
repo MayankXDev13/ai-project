@@ -6,11 +6,11 @@ from fastapi import UploadFile
 from src.models.documents import Document, ProcessingStatus
 from src.config.config import UPLOAD_DIR
 
-ALLOWED_MIME_TYPES = {"application/pdf"}
-
 async def save_upload_file(user_id: str, file: UploadFile) -> str:
-    if file.content_type not in ALLOWED_MIME_TYPES:
-        raise ValueError(f"Unsupported file type: {file.content_type}")
+    filename = (file.filename or "").lower()
+
+    if not filename.endswith(".pdf"):
+        raise ValueError("Only PDF files are supported")
 
     user_dir = os.path.join(UPLOAD_DIR, user_id)
     os.makedirs(user_dir, exist_ok=True)
