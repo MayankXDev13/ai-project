@@ -1,3 +1,4 @@
+from src.models import VerificationToken
 from datetime import datetime, timezone
 from typing import Optional, List
 from uuid import uuid4

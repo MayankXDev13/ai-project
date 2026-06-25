@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlmodel import Session
 from src.db.database import get_session
 from src.schemas.documents import UploadResponse, DocumentResponse, DocumentListResponse
 from src.services.document_service import save_upload_file, create_document_record, get_user_documents, get_document, delete_document
-from src.services.background import process_pdf_background
+from src.queue.q import queue
+from src.worker import process_document_job
 from src.utils.dependencies import get_current_user
 from src.models.users import User
 
@@ -12,7 +13,6 @@ router = APIRouter(prefix="/documents", tags=["documents"])
 @router.post("/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED)
 async def upload_document(
     file: UploadFile = File(...),
-    background_tasks: BackgroundTasks = BackgroundTasks(),
     user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
@@ -29,7 +29,7 @@ async def upload_document(
         mime_type=file.content_type or "application/pdf",
     )
 
-    background_tasks.add_task(process_pdf_background, doc.id)
+    queue.enqueue(process_document_job, doc.id)
 
     return UploadResponse(id=doc.id, status=doc.status)
 

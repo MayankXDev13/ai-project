@@ -17,9 +17,8 @@ class MessageRole(str, Enum):
 
 class Message(SQLModel, table=True):
     __tablename__ = "messages"
-
     id: str = Field(default_factory=_uuid, primary_key=True)
     chat_session_id: str = Field(foreign_key="chat_sessions.id", index=True, nullable=False)
-    role: MessageRole
-    content: str
+    role: MessageRole = Field(nullable=False)
+    content: str = Field(nullable=False)
     created_at: datetime = Field(default_factory=_now)

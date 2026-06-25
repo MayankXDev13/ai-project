@@ -13,12 +13,11 @@ from src.schemas.chat import (
     MessageResponse,
     MessageListResponse,
 )
-from src.services.rag_service import RAGService
+from src.services.rag_service import query as rag_query
 from src.utils.dependencies import get_current_user
 from src.models.users import User
 
 router = APIRouter(prefix="/chat", tags=["chat"])
-rag = RAGService()
 
 @router.post("/sessions", response_model=CreateSessionResponse, status_code=status.HTTP_201_CREATED)
 def create_session(
@@ -102,7 +101,7 @@ def send_message(
         return MessageResponse(id=assistant_msg.id, role=assistant_msg.role, content=assistant_msg.content, created_at=assistant_msg.created_at)
 
     try:
-        answer = rag.query(doc.qdrant_collection_id, body.content)
+        answer = rag_query(doc.qdrant_collection_id, body.content)
     except Exception as e:
         answer = f"Error querying document: {str(e)}"
 

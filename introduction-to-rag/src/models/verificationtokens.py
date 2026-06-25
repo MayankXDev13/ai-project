@@ -1,3 +1,4 @@
+from src.models import User
 from datetime import datetime, timezone
 from typing import Optional
 from uuid import uuid4

@@ -1,11 +1,11 @@
 from sqlmodel import Session
 from src.db.database import engine
 from src.models.documents import Document, ProcessingStatus
-from src.services.rag_service import RAGService
+from src.services.rag_service import process_pdf, embed_and_store
 
-rag = RAGService()
 
-def process_pdf_background(document_id: str) -> None:
+def process_document_job(document_id: str) -> None:
+    """RQ job: process a PDF document end-to-end and store embeddings."""
     with Session(engine) as session:
         doc = session.get(Document, document_id)
         if not doc:
@@ -17,13 +17,12 @@ def process_pdf_background(document_id: str) -> None:
             session.commit()
 
             collection_name = f"doc_{document_id}"
-
-            langchain_docs = rag.process_pdf(doc.storage_path)
+            langchain_docs = process_pdf(doc.storage_path)
 
             if not langchain_docs:
                 raise ValueError("No text could be extracted from the PDF")
 
-            chunk_count = rag.embed_and_store(langchain_docs, collection_name)
+            embed_and_store(langchain_docs, collection_name)
 
             doc.status = ProcessingStatus.COMPLETED
             doc.qdrant_collection_id = collection_name

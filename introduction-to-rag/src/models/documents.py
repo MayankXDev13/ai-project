@@ -20,21 +20,16 @@ class ProcessingStatus(str, Enum):
 
 class Document(SQLModel, table=True):
     __tablename__ = "documents"
-
     id: str = Field(default_factory=_uuid, primary_key=True)
     user_id: str = Field(foreign_key="users.id", index=True, nullable=False)
-
     title: Optional[str] = Field(default=None)
-    original_filename: str
-    storage_path: str
-    mime_type: str
-
+    original_filename: str = Field(nullable=False)
+    storage_path: str = Field(nullable=False)
+    mime_type: str = Field(nullable=False)
     qdrant_collection_id: Optional[str] = Field(default=None)
     qdrant_document_id: Optional[str] = Field(default=None)
-
     status: ProcessingStatus = Field(default=ProcessingStatus.PENDING)
     processing_error: Optional[str] = None
-
     deleted_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=_now)
     updated_at: datetime = Field(default_factory=_now)

@@ -13,7 +13,6 @@ def _now() -> datetime:
 
 class ChatSession(SQLModel, table=True):
     __tablename__ = "chat_sessions"
-
     id: str = Field(default_factory=_uuid, primary_key=True)
     user_id: str = Field(foreign_key="users.id", index=True, nullable=False)
     document_id: str = Field(foreign_key="documents.id", index=True, nullable=False)

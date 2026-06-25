@@ -4,8 +4,7 @@ from src.lib.security import hash_password, verify_password, create_access_token
 
 class AuthError(Exception):
     pass
-
-def register_user(session: Session, email: str, password: str) -> User:
+async def register_user(session: Session, email: str, password: str) -> User:
     existing = session.exec(select(User).where(User.email == email)).first()
     if existing:
         raise AuthError("Email already registered")
@@ -15,7 +14,7 @@ def register_user(session: Session, email: str, password: str) -> User:
     session.refresh(user)
     return user
 
-def authenticate_user(session: Session, email: str, password: str) -> str:
+async def authenticate_user(session: Session, email: str, password: str) -> str:
     user = session.exec(select(User).where(User.email == email)).first()
     if not user or not verify_password(password, user.hash_password):
         raise AuthError("Invalid email or password")
