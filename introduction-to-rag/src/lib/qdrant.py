@@ -2,7 +2,10 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
 from src.config.config import QDRANT_URL
 
-qdrant_client = QdrantClient(url=QDRANT_URL)
+qdrant_client = QdrantClient(
+    url=QDRANT_URL,
+    check_compatibility=False,
+)
 
 COLLECTION_VECTOR_SIZE = 1536
 COLLECTION_DISTANCE = Distance.COSINE
