@@ -9,21 +9,21 @@ from src.models.users import User
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(body: RegisterRequest, session: Session = Depends(get_session)):
+async def register(body: RegisterRequest, session: Session = Depends(get_session)):
     try:
-        user = register_user(session, body.email, body.password)
+        user = await register_user(session, body.email, body.password)
         return UserResponse(id=user.id, email=user.email)
     except AuthError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 
 @router.post("/login", response_model=TokenResponse)
-def login(body: LoginRequest, session: Session = Depends(get_session)):
+async def login(body: LoginRequest, session: Session = Depends(get_session)):
     try:
-        token = authenticate_user(session, body.email, body.password)
+        token = await authenticate_user(session, body.email, body.password)
         return TokenResponse(access_token=token)
     except AuthError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 @router.get("/me", response_model=UserResponse)
-def me(user: User = Depends(get_current_user)):
+async def me(user: User = Depends(get_current_user)):
     return UserResponse(id=user.id, email=user.email)

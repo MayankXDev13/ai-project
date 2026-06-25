@@ -5,4 +5,5 @@ down:
 	docker compose down
 
 run:
-	uvicorn src.main:app --reload & python src/worker.py & wait
+	uvicorn src.main:app --reload
+	python -m src.worker

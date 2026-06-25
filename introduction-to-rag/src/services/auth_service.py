@@ -4,7 +4,7 @@ from src.lib.security import hash_password, verify_password, create_access_token
 
 class AuthError(Exception):
     pass
-def register_user(session: Session, email: str, password: str) -> User:
+async def register_user(session: Session, email: str, password: str) -> User:
     existing = session.exec(select(User).where(User.email == email)).first()
     if existing:
         raise AuthError("Email already registered")
