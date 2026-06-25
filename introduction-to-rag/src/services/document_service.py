@@ -25,7 +25,7 @@ async def save_upload_file(user_id: str, file: UploadFile) -> str:
 
     return file_path
 
-async def create_document_record(
+def create_document_record(
     session: Session,
     user_id: str,
     filename: str,
@@ -44,7 +44,7 @@ async def create_document_record(
     session.refresh(doc)
     return doc
 
-async def get_user_documents(session: Session, user_id: str) -> list[Document]:
+def get_user_documents(session: Session, user_id: str) -> list[Document]:
     stmt = (
         select(Document)
         .where(Document.user_id == user_id, Document.deleted_at.is_(None))
@@ -52,7 +52,7 @@ async def get_user_documents(session: Session, user_id: str) -> list[Document]:
     )
     return session.exec(stmt).all()
 
-async def get_document(session: Session, document_id: str, user_id: str) -> Document | None:
+def get_document(session: Session, document_id: str, user_id: str) -> Document | None:
     stmt = select(Document).where(
         Document.id == document_id,
         Document.user_id == user_id,
@@ -60,7 +60,7 @@ async def get_document(session: Session, document_id: str, user_id: str) -> Docu
     )
     return session.exec(stmt).first()
 
-async def delete_document(session: Session, document: Document) -> None:
+def delete_document(session: Session, document: Document) -> None:
     from datetime import datetime, timezone
     document.deleted_at = datetime.now(timezone.utc)
     session.add(document)
