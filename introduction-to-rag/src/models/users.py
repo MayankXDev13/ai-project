@@ -1,9 +1,8 @@
-from src.models import VerificationToken
+from __future__ import annotations
 from datetime import datetime, timezone
-from typing import Optional, List
+from typing import Optional
 from uuid import uuid4
-from sqlmodel import Field, SQLModel, Relationship
-
+from sqlmodel import Field, SQLModel
 
 def _uuid() -> str:
     return str(uuid4())
@@ -17,7 +16,6 @@ class User(SQLModel, table=True):
     id: str = Field(default_factory=_uuid, primary_key=True)
     email: str = Field(index=True, nullable=False, unique=True)
     hash_password: str = Field(nullable=False)
-    verification_tokens: List["VerificationToken"] = Relationship()
     deleted_at: Optional[datetime] = Field(default=None)
     created_at: datetime = Field(default_factory=_now)
     updated_at: datetime = Field(default_factory=_now)
